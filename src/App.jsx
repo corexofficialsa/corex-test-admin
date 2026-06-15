@@ -1082,7 +1082,7 @@ function FinanceTab({ invoices, expenses, setExpenses, setActivityLog }) {
       category: form.category,
       date: new Date().toISOString().split('T')[0],
     }).select().single();
-    if (error) { alert('Supabase error: ' + JSON.stringify(error)); return; }
+    if (error) { console.error(error); return; }
     const exp = mapExpense(data);
     setExpenses((prev) => [exp, ...prev]);
     const { data: act } = await supabase.from('activity_log').insert({ action: `Expense logged: ${exp.description} — ${fmt(exp.amount)}`, time: 'just now', type: 'expense' }).select().single();
