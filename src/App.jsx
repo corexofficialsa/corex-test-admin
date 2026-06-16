@@ -2061,7 +2061,30 @@ function BottomNav({ active, setActive }) {
 // APP ROOT
 // ─────────────────────────────────────────
 
+function SplashScreen() {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      zIndex: 9999,
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+        <div style={{
+          width: 100, height: 100,
+          background: '#000', borderRadius: 24,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden',
+        }}>
+          <img src="/corex-logo.png" alt="Corex" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        </div>
+        <span style={{ color: '#fff', fontSize: 28, fontWeight: 900, letterSpacing: '0.12em', fontFamily: 'sans-serif' }}>COREX</span>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [splash, setSplash] = useState(true);
   const [authRole, setAuthRole] = useState(() => {
     try {
       const stored = localStorage.getItem('corex_auth');
@@ -2078,6 +2101,11 @@ export default function App() {
   const [expenses, setExpenses] = useState([]);
   const [quotations, setQuotations] = useState([]);
   const [activityLog, setActivityLog] = useState([]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSplash(false), 500);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     document.title = 'Corex Admin Dashboard';
@@ -2104,6 +2132,8 @@ export default function App() {
     await supabase.auth.signOut();
     setAuthRole(null);
   };
+
+  if (splash) return <SplashScreen />;
 
   if (!authRole) {
     return <LoginScreen onLogin={setAuthRole} />;
